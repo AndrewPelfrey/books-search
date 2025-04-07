@@ -24,7 +24,6 @@ const SignupForm = ({ handleModalClose }: { handleModalClose: () => void }) => {
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -33,7 +32,11 @@ const SignupForm = ({ handleModalClose }: { handleModalClose: () => void }) => {
 
     try {
       const { data } = await addUser({
-        variables: { userInput: userFormData }, 
+        variables: { 
+          username: userFormData.username,
+          email: userFormData.email,
+          password: userFormData.password,
+        }, 
       });
 
       if (!data) {
@@ -43,15 +46,13 @@ const SignupForm = ({ handleModalClose }: { handleModalClose: () => void }) => {
       const { token } = data.addUser; 
       Auth.login(token); 
 
-      // Close the modal (if applicable)
       handleModalClose();
       
     } catch (err) {
       console.error(err);
-      setShowAlert(true); // Show an alert if something goes wrong
+      setShowAlert(true); 
     }
 
-    // Reset the form
     setUserFormData({
       username: '',
       email: '',
